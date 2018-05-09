@@ -1,0 +1,133 @@
+version: '3'
+
+services:
+  nginx:
+    build:
+      dockerfile: ./nginx/nginx.dockerfile
+      context: .
+    image: nginx
+    container_name: nginx
+    ports:
+      - "80:80"
+    networks:
+      - productionNetwork
+    depends_on:
+      - api1
+      - api2
+      - api3
+
+  redis:
+    image: redis
+    command: redis-server --appendonly yes
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - productionNetwork
+
+  rabbit:
+    image: rabbitmq
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - productionNetwork
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:15672"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  fileCounterStore:
+    build:
+      dockerfile: ./FileCounterStore/Dockerfile
+      context: ../FileCounterStore
+    image: filecounterstore
+    restart: always
+    environment:
+      - RabbitMQHost=rabbit
+      - RabbitMQPort=5672
+      - QueueName=FilesToProcess
+      - RedisAddress=redis:6379
+    networks:
+      - productionNetwork
+    volumes:
+      - repository:/repository
+    depends_on:
+      - redis
+      - rabbit
+
+  api1:
+    build:
+      context: .
+      dockerfile: WordSearcher/Dockerfile
+    image: wordsearcherapi
+    restart: always
+    environment:
+      - RabbitMQHost=rabbit
+      - RabbitMQPort=5672
+      - QueueName=FilesToProcess
+      - RedisAddress=redis:6379
+    container_name: wordSearcherApi1
+    networks:
+      - productionNetwork
+    ports:
+      - "61370"
+    volumes:
+      - repository:/repository
+    depends_on:
+      - redis
+      - rabbit
+
+  api2:
+    build:
+      context: .
+      dockerfile: WordSearcher/Dockerfile
+    image: wordsearcherapi
+    restart: always
+    environment:
+      - RabbitMQHost=rabbit
+      - RabbitMQPort=5672
+      - QueueName=FilesToProcess
+      - RedisAddress=redis:6379
+    container_name: wordSearcherApi2
+    networks:
+      - productionNetwork
+    ports:
+      - "61370"
+    volumes:
+      - repository:/repository
+    depends_on:
+      - redis
+      - rabbit
+
+  api3:
+    build:
+      context: .
+      dockerfile: WordSearcher/Dockerfile
+    image: wordsearcherapi
+    restart: always
+    environment:
+      - RabbitMQHost=rabbit
+      - RabbitMQPort=5672
+      - QueueName=FilesToProcess
+      - RedisAddress=redis:6379
+    container_name: wordSearcherApi3
+    networks:
+      - productionNetwork
+    ports:
+      - "61370"
+    volumes:
+      - repository:/repository
+    depends_on:
+      - redis
+      - rabbit
+
+volumes:
+  repository:
+    driver: local
+
+networks:
+  productionNetwork:
+    driver: bridge

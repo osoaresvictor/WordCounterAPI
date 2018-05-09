@@ -1,0 +1,24 @@
+﻿
+@{
+    ViewData["Title"] = "Upload";
+}
+
+<h2>Selecione Arquivos CSV para Popular a Base de Palavras</h2>
+
+<form method="post" enctype="multipart/form-data" action="upload/UploadFiles">
+    <div class="form-group">
+        <div class="col-md-10">
+            <p>Selecione um ou mais arquivos CSV:</p>
+            <input type="file" name="files" multiple />
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-10">
+            <input type="submit" value="Enviar" />
+        </div>
+    </div>
+</form>
+
+<font size="3" color="red">@ViewBag.Message</font>
+<br />
+<br /><b>**Tamanho m&aacute;ximo dos arquivos: At&eacute; 10MB!</b>
