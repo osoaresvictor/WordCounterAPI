@@ -3,7 +3,7 @@
 
 ## Introdução
 ![WordCounterAPI Architecture](https://raw.githubusercontent.com/osoaresvictor/WordCounterAPI/master/wordsearcher_architecture.png)
-Trata-se do projeto de um Web App, um contador de um banco de  palavras, com foco em escalabilidade. De forma geral, o usuário pode fazer o upload de arquivos `csv` contendo apenas palavras, através da página `localhost:80/upload` e após isso, a aplicação irá processar os arquivos e armazenar em banco para posteriores consultas em `localhost:80/counter/< palavra >`.
+Trata-se do projeto de um Web App, um contador de um banco de  palavras, com foco em escalabilidade. De forma geral, o usuário pode fazer o upload de arquivos `csv` contendo apenas palavras, através da página `localhost:80/upload` e após isso, a aplicação irá processar os arquivos e armazenar em banco para posteriores consultas em `localhost:80/counter/<palavra>`.
 
 ## Fluxo de Execução
 
